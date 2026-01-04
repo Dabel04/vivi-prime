@@ -1417,7 +1417,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <a class="navbar-brand" href="#">44:11</a>
+            <a class="navbar-brand" href="index.php">44:11</a>
             
             <!-- Mobile Icons Container -->
             <div class="mobile-icons-container d-lg-none">
@@ -1433,7 +1433,7 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.php">Shop</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
