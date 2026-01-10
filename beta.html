@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAWK | Fashion Store</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons for lightweight, crisp icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --font-main: 'Poppins', sans-serif;
+            
+            /* Colors */
+            --color-black: #1a1a1a;
+            --color-white: #ffffff;
+            --color-gray-light: #f4f4f4;
+            --color-gray-text: #666666;
+            --color-accent-orange: #fcece0; /* Mens Card */
+            --color-accent-teal: #e0fcf8;   /* Womens Card */
+            --color-accent-coral: #fce0e0;  /* Kids Card */
+            --color-border: #e5e5e5;
+            
+            /* Spacing */
+            --container-width: 1280px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 48px;
+            --spacing-xl: 80px;
+            
+            /* UI Elements */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-full: 999px;
+            --shadow-card: 0 4px 12px rgba(0,0,0,0.05);
+            --shadow-hover: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-black);
+            background-color: var(--color-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; object-fit: cover; }
+        button { border: none; background: none; cursor: pointer; font-family: inherit; }
+
+        /* --- UTILITY CLASSES --- */
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            position: relative;
+        }
+
+        .badge {
+            background: var(--color-black);
+            color: var(--color-white);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: var(--radius-full);
+            position: absolute;
+            top: -5px;
+            right: -8px;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--spacing-sm) 0;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        .logo-area {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            color: var(--color-gray-text);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .main-nav ul {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .main-nav a {
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .main-nav a:hover {
+            color: var(--color-gray-text);
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .icon-btn {
+            font-size: 1.4rem;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            background-color: var(--color-gray-light);
+            overflow: hidden;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .hero-slide {
+            display: none; /* JS will handle display */
+            height: 600px;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .hero-slide.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .hero-content {
+            flex: 1;
+            padding-left: 10%;
+            z-index: 10;
+        }
+
+        .hero-image {
+            flex: 1.2;
+            height: 100%;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: var(--spacing-md);
+            font-weight: 300;
+        }
+
+        .hero-title span {
+            font-weight: 700;
+            display: block;
+        }
+
+        .btn-primary {
+            background-color: var(--color-black);
+            color: var(--color-white);
+            padding: 14px 32px;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background-color: #333;
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .dot.active {
+            background: var(--color-black);
+            transform: scale(1.2);
+        }
+
+        /* --- PROMO CARDS --- */
+        .promo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .promo-card {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            height: 280px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-md);
+            transition: transform 0.3s;
+        }
+
+        .promo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .promo-text {
+            flex: 1;
+            z-index: 2;
+        }
+
+        .promo-text h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .promo-text .discount {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .link-arrow {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .promo-img {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            height: 100%;
+            width: 50%;
+        }
+
+        .promo-img img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            object-position: bottom center;
+        }
+
+        /* Card Variants */
+        .card-mens { background-color: var(--color-accent-orange); }
+        .card-womens { background-color: var(--color-accent-teal); }
+        .card-kids { background-color: var(--color-accent-coral); }
+
+        /* --- SHOP BY CATEGORY --- */
+        .category-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .category-carousel {
+            display: flex;
+            gap: var(--spacing-lg);
+            overflow-x: auto;
+            padding: var(--spacing-sm) 0;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE */
+            scroll-behavior: smooth;
+            justify-content: center; /* Center if items fit */
+        }
+
+        .category-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 100px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .cat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .cat-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: var(--spacing-xs);
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+            background: var(--color-gray-light);
+        }
+
+        .cat-item:hover .cat-img {
+            border-color: var(--color-black);
+        }
+
+        .cat-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* --- PRODUCT GRIDS (Best Sellers / New Arrivals) --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .product-card {
+            background: var(--color-white);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            box-shadow: var(--shadow-card);
+            transform: translateY(-4px);
+        }
+
+        .prod-img-box {
+            background: var(--color-gray-light);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            height: 300px;
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+        }
+
+        .prod-img-box img {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .prod-img-box img {
+            transform: scale(1.05);
+        }
+
+        .prod-info h4 {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .prod-desc {
+            font-size: 0.85rem;
+            color: var(--color-gray-text);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .prod-price {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* --- PROMO BANNER STRIP --- */
+        .banner-strip {
+            width: 100%;
+            height: 300px;
+            background: #fdf6ea; /* Fallback */
+            background: linear-gradient(135deg, #fcece0 0%, #e0fcf8 50%, #fce0e0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-xl);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Abstract Shapes for Banner */
+        .banner-strip::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(26, 26, 26, 0.05);
+            border-radius: 50%;
+            left: 10%;
+            top: -50px;
+        }
+
+        .banner-text {
+            text-align: center;
+            z-index: 2;
+        }
+
+        .banner-text h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        /* --- FOOTER (Minimal) --- */
+        footer {
+            background: var(--color-black);
+            color: var(--color-white);
+            padding: var(--spacing-lg) 0;
+            text-align: center;
+        }
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 1024px) {
+            .hero-slide { height: 450px; }
+            .hero-title { font-size: 2.5rem; }
+            .product-grid { grid-template-columns: repeat(3, 1fr); }
+            .promo-grid { gap: var(--spacing-sm); }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle { display: block; }
+            .main-nav {
+                position: fixed;
+                top: 60px;
+                left: -100%;
+                width: 100%;
+                background: var(--color-white);
+                padding: var(--spacing-md);
+                border-bottom: 1px solid var(--color-border);
+                transition: left 0.3s ease;
+            }
+            .main-nav.active { left: 0; }
+            .main-nav ul { flex-direction: column; gap: var(--spacing-sm); }
+            
+            .promo-grid { grid-template-columns: 1fr; }
+            .hero-content { padding-left: var(--spacing-md); }
+            .hero-image { opacity: 0.5; position: absolute; right: 0; width: 100%; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .category-carousel { justify-content: flex-start; padding-left: var(--spacing-md); }
+        }
+
+        @media (max-width: 480px) {
+            .product-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.5rem; }
+            .banner-text h2 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container header-inner">
+            <div class="logo-area">
+                <a href="#" class="logo">CHAWK</a>
+                <span class="logo-sub">EST. 2025</span>
+            </div>
+
+            <button class="mobile-toggle" onclick="toggleMenu()">
+                <i class="ph ph-list"></i>
+            </button>
+
+            <nav class="main-nav" id="mainNav">
+                <ul>
+                    <li><a href="#">Demo <i class="ph ph-caret-down"></i></a></li>
+                    <li><a href="#">Men Wear <i class="ph ph-caret-down"></i></a></li>
+                    <li><a href="#">Women Wear <i class="ph ph-caret-down"></i></a></li>
+                    <li><a href="#">Kids</a></li>
+                    <li><a href="#">Sports</a></li>
+                    <li><a href="#">Search</a></li>
+                    <li><a href="#">Pages <i class="ph ph-caret-down"></i></a></li>
+                </ul>
+            </nav>
+
+            <div class="header-icons">
+                <button class="icon-btn"><i class="ph ph-magnifying-glass"></i></button>
+                <button class="icon-btn"><i class="ph ph-user"></i></button>
+                <button class="icon-btn" onclick="addToCart()">
+                    <i class="ph ph-shopping-bag"></i>
+                    <span class="badge" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <main>
+        <section class="hero">
+            <!-- Slide 1 -->
+            <div class="container hero-slide active">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Picked Every Item With
+                        <span>Care, You Must Try.</span>
+                    </h1>
+                    <a href="#" class="btn-primary">See Collection <i class="ph ph-arrow-right"></i></a>
+                </div>
+                <div class="hero-image">
+                    <!-- Placeholder: Laughing models -->
+                    <img src="img/bottoms.jpg" alt="Fashion Models">
+                </div>
+            </div>
+            
+             <!-- Slide 2 (For Functionality Demo) -->
+             <div class="container hero-slide">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Winter Collection
+                        <span>Available Now.</span>
+                    </h1>
+                    <a href="#" class="btn-primary">Shop Now <i class="ph ph-arrow-right"></i></a>
+                </div>
+                <div class="hero-image">
+                    <img src="img/leggings.jpg" alt="Winter Fashion">
+                </div>
+            </div>
+
+            <div class="slider-dots">
+                <div class="dot active" onclick="setSlide(0)"></div>
+                <div class="dot" onclick="setSlide(1)"></div>
+            </div>
+        </section>
+
+        <!-- PROMO CARDS -->
+        <section class="container">
+            <div class="promo-grid">
+                <!-- Mens -->
+                <article class="promo-card card-mens">
+                    <div class="promo-text">
+                        <h3>Mens Collection</h3>
+                        <span class="discount">40% OFF</span>
+                        <a href="#" class="link-arrow">Go to Collection <i class="ph ph-arrow-right"></i></a>
+                    </div>
+                    <div class="promo-img">
+                        <img src="https://placehold.co/300x400/fcece0/333?text=Men" alt="Men">
+                    </div>
+                </article>
+                <!-- Womens -->
+                <article class="promo-card card-womens">
+                    <div class="promo-text">
+                        <h3>Womens Collection</h3>
+                        <span class="discount">60% OFF</span>
+                        <a href="#" class="link-arrow">Go to Collection <i class="ph ph-arrow-right"></i></a>
+                    </div>
+                    <div class="promo-img">
+                        <img src="https://placehold.co/300x400/e0fcf8/333?text=Women" alt="Women">
+                    </div>
+                </article>
+                <!-- Kids -->
+                <article class="promo-card card-kids">
+                    <div class="promo-text">
+                        <h3>Kids Collection</h3>
+                        <span class="discount">30% OFF</span>
+                        <a href="#" class="link-arrow">Go to Collection <i class="ph ph-arrow-right"></i></a>
+                    </div>
+                    <div class="promo-img">
+                        <img src="https://placehold.co/300x400/fce0e0/333?text=Kids" alt="Kids">
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- SHOP BY CATEGORY -->
+        <section class="container category-section">
+            <h2 class="section-title">Shop By Category</h2>
+            <div class="category-carousel">
+                <div class="cat-item">
+                    <div class="cat-img"><img src="https://placehold.co/100x100?text=S" alt="Sunglass"></div>
+                    <span class="cat-label">Sunglass</span>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-img"><img src="https://placehold.co/100x100?text=W" alt="Watch"></div>
+                    <span class="cat-label">Watch</span>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-img"><img src="https://placehold.co/100x100?text=K" alt="Kids"></div>
+                    <span class="cat-label">Kids</span>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-img"><img src="https://placehold.co/100x100?text=Sp" alt="Sports"></div>
+                    <span class="cat-label">Sports</span>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-img"><img src="https://placehold.co/100x100?text=B" alt="Bags"></div>
+                    <span class="cat-label">Bags</span>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-img"><img src="https://placehold.co/100x100?text=Sn" alt="Sneakers"></div>
+                    <span class="cat-label">Sneakers</span>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-img"><img src="https://placehold.co/100x100?text=M" alt="Men"></div>
+                    <span class="cat-label">Men</span>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-img"><img src="https://placehold.co/100x100?text=Wo" alt="Women"></div>
+                    <span class="cat-label">Women</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- BEST SELLERS -->
+        <section class="container">
+            <h2 class="section-title">Best Sellers</h2>
+            <div class="product-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=Niki+Black" alt="Niki Black">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Niki Black</h4>
+                        <p class="prod-desc">Casual comfort wear</p>
+                        <span class="prod-price">£100.00</span>
+                    </div>
+                </div>
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="img/Flow Seamless Tank.jpg" alt="Maniac Red">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Maniac Red Boys</h4>
+                        <p class="prod-desc">Stylish winter fit</p>
+                        <span class="prod-price">£150.00</span>
+                    </div>
+                </div>
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=Hermes" alt="Hermes">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Hermes Custom Londo</h4>
+                        <p class="prod-desc">Exclusive edition</p>
+                        <span class="prod-price">£49.00</span>
+                    </div>
+                </div>
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=Philip+Lim" alt="Bag">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Philip Lim Leather</h4>
+                        <p class="prod-desc">Shoulder Bag</p>
+                        <span class="prod-price">£260.00</span>
+                    </div>
+                </div>
+                <!-- Product 5 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=Roadster" alt="Roadster">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Roadster Women</h4>
+                        <p class="prod-desc">Round Neck Tee</p>
+                        <span class="prod-price">£80.00</span>
+                    </div>
+                </div>
+                <!-- Product 6 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=LV+High" alt="LV">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Louise Vuitton High</h4>
+                        <p class="prod-desc">Luxury Sneakers</p>
+                        <span class="prod-price">£1,150.00</span>
+                    </div>
+                </div>
+                <!-- Product 7 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=Zara+Monte" alt="Zara">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Zara Monte Carlo</h4>
+                        <p class="prod-desc">Summer Vibes</p>
+                        <span class="prod-price">£100.00</span>
+                    </div>
+                </div>
+                <!-- Product 8 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=HM+Boys" alt="H&M">
+                    </div>
+                    <div class="prod-info">
+                        <h4>H&M Boys Top</h4>
+                        <p class="prod-desc">Essential wear</p>
+                        <span class="prod-price">£200.00</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BANNER STRIP -->
+        <section class="banner-strip">
+            <div class="banner-text">
+                <h2>Up To 60% Off Holiday Bit</h2>
+                <a href="#" class="btn-primary">Shop Sale <i class="ph ph-arrow-right"></i></a>
+            </div>
+        </section>
+
+        <!-- NEW ARRIVALS -->
+        <section class="container">
+            <h2 class="section-title">New Arrivals</h2>
+            <div class="product-grid">
+                <!-- Product 9 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=Alex+Bag" alt="Alex">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Alex Maxxeen</h4>
+                        <p class="prod-desc">Shoulder Bag</p>
+                        <span class="prod-price">£200.00</span>
+                    </div>
+                </div>
+                <!-- Product 10 -->
+                <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=Armani" alt="Armani">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Armani Submariner</h4>
+                        <p class="prod-desc">Limited Edition</p>
+                        <span class="prod-price">£1,450.00</span>
+                    </div>
+                </div>
+                 <!-- Product 11 -->
+                 <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=Zara+Blaze" alt="Zara">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Zara Blazing Black</h4>
+                        <p class="prod-desc">Evening Wear</p>
+                        <span class="prod-price">£250.00</span>
+                    </div>
+                </div>
+                 <!-- Product 12 -->
+                 <div class="product-card">
+                    <div class="prod-img-box">
+                        <img src="https://placehold.co/400x500?text=Rayban" alt="Rayban">
+                    </div>
+                    <div class="prod-info">
+                        <h4>Rayban Havana</h4>
+                        <p class="prod-desc">Plastic Sunglasses</p>
+                        <span class="prod-price">£100.00</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CHAWK Fashion. Designed by Kenton.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // --- 1. SLIDER LOGIC ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelectorAll('.dot');
+        const slideInterval = 5000; // 5 seconds
+
+        function setSlide(index) {
+            // Remove active class from current
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            
+            // Set new index
+            currentSlide = index;
+            if (currentSlide >= slides.length) currentSlide = 0;
+            
+            // Add active class to new
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+
+        // Auto play
+        setInterval(() => {
+            setSlide(currentSlide + 1);
+        }, slideInterval);
+
+
+        // --- 2. MOBILE MENU TOGGLE ---
+        function toggleMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+        }
+
+
+        // --- 3. CART INCREMENT (Just for interaction feel) ---
+        let count = 0;
+        const badge = document.getElementById('cartCount');
+        
+        function addToCart() {
+            count++;
+            badge.innerText = count;
+            // Simple visual feedback
+            badge.parentElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                badge.parentElement.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        console.log("CHAWK UI Loaded - Kenton's Revision");
+    </script>
+</body>
+</html>
